@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#btnGo").on("click",function(){
+                location.href="#";
+            })
+            $("#btnBack").on("click",function(){
+                location.href="/user/myPage";
+            })
+
+        })
+    </script>
+</head>
+<body>
+    <div class="top_button">
+        <a href="/user/myPage">
+        <button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+        <a href="/user/logout">
+        <button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+    </div>
+    <div id="wrap">
+        <div class="logo">
+            <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="#">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="main_container bg-body-tertiary row">
+            <div class="content_name">결과 조회</div>
+            <div class="table">
+                <div class="table_row">
+                    <div class="table_cell">저장된 자가진단 결과가 없습니다.</div>
+                    <div class="table_cell"><br>자가진단을 진행하여 결과를 저장해주세요.</div>
+                </div>
+            </div>
+            <div class="btn_foot me-auto">
+                <a href="#">
+                <button id="btnGo" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">진단하기</button></a>
+                <a href="/user/myPage">
+                <button id="btnBack" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">이전으로</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

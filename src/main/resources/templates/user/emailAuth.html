@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+        let authNumber = /*[[${session.authNumber}]]*/ 'null';
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#btnAuth").on("click", function () {
+                let f = document.getElementById("f");
+
+                if (f.authNum.value === "") {
+                    alert("인증번호를 입력해주세요.");
+                    f.authNum.focus();
+                    return;
+                }
+
+                if (f.authNum.value !== authNumber) {
+                    alert("인증번호가 일치하지 않습니다.")
+                }
+
+                if (f.authNum.value === authNumber) {
+                    alert("인증에 성공하였습니다.")
+                    location.href="/user/newPassword";
+                }
+
+            })
+        })
+
+
+    </script>
+</head>
+<body>
+    <div class="top_button">
+        <a href="/user/login">
+        <button type="button" class="btn btn-secondary border-0">로그인</button></a>
+        <a href="/user/userRegForm">
+        <button type="button" class="btn btn-secondary border-0">회원가입</button></a>
+    </div>
+    <div id="wrap">
+        <div class="logo">
+            <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="/user/login">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/user/login">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/user/login">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/user/login">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="main_container bg-body-tertiary row">
+            <div class="content_name">이메일 인증</div>
+            <form id="f" class="form">
+                <div class="row">
+                    <label for="authNum" class="form-label mt-4">인증번호</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0" id="authNum" name="authNum" placeholder="인증번호를 입력하세요" required>
+                    </div>
+                </div>
+                <br><br>
+                <div class="btn_foot">
+                    <button id="btnAuth" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">인증확인</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

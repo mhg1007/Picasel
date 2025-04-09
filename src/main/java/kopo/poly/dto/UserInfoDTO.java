@@ -14,7 +14,7 @@ public record UserInfoDTO(
         @NotBlank(message = "이름을 입력해주세요.")
         String name,
 
-        @NotBlank(message = "암호를 입력해주세요.")
+        @NotBlank(message = "비밀번호를 입력해주세요.")
         String password
 
 ) {
