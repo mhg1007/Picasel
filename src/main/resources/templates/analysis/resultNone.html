@@ -8,18 +8,13 @@
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#btnNewPassword").on("click",function(){
-                location.href="/user/newPassword";
+            $("#btnGo").on("click",function(){
+                location.href="/analysis/main";
             })
-            $("#btnAnalysisList").on("click",function(){
-                location.href="/analysis/resultList";
+            $("#btnBack").on("click",function(){
+                location.href="/user/myPage";
             })
-            $("#btnSelfDiagnosisList").on("click",function(){
-                location.href="/selfdiagnosis/resultList";
-            })
-            $("#btnDelete").on("click",function(){
-                location.href="/user/delete";
-            })
+
         })
     </script>
 </head>
@@ -58,16 +53,18 @@
             </div>
         </nav>
         <div class="main_container bg-body-tertiary row">
-            <div class="content_name">마이페이지</div>
-            <div class="content row">
-                <a href="/user/newPassword">
-                <button id="btnNewPassword" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">비밀번호 변경</button></a>
-                <a href="/analysis/resultList">
-                <button id="btnAnalysisList" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">그림 심리 분석 결과 조회</button></a>
-                <a href="/selfdiagnosis/resultList">
-                <button id="btnSelfDiagnosisList" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">자가진단 결과 조회</button></a>
-                <a href="/user/delete">
-                <button id="btnDelete" type="button" class="btn btn-primary mb-5 justify-content-md-center border-0">회원탈퇴</button></a>
+            <div class="content_name">그림 심리 분석 결과 조회</div>
+            <div class="table">
+                <div class="table_row">
+                    <div class="table_cell">저장된 그림 심리 분석 결과가 없습니다.</div>
+                    <div class="table_cell"><br>분석 받기를 진행하여 결과를 저장해주세요.</div>
+                </div>
+            </div>
+            <div class="btn_foot me-auto">
+                <a href="/analysis/main">
+                <button id="btnGo" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">분석받기</button></a>
+                <a href="/user/myPage">
+                <button id="btnBack" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">이전으로</button></a>
             </div>
         </div>
     </div>

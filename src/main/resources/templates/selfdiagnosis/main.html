@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            let f=document.getElementById("f");
+
+            $("#btnSubmit").on("click",function(){
+                doSubmit(f)
+            })
+
+            function doSubmit(f){
+                let act=0;
+                let quit=false;
+                let totalnum=0;
+                for (let i = 1; i <= 27; i++) {
+                    for (let j = 0; j <= 2; j++) {
+                        eval("var temp = f.q"+i+"["+j+"].checked;");
+                        if (temp) {
+                            eval("var num"+i+" = f.q"+i+"["+j+"].value;");
+                            break;
+                        }
+                        if (j == 2) {
+                            quit = true;
+                        }
+
+                    }
+                    if (quit) {
+                        alert("답안을 선택하세요");
+                        quit = false;
+                        act = 0;
+                        break;
+                    }
+                    act++;
+                }
+                if (act == 27) {
+                    for (let m =1; m <= 27;m++) {
+                        eval("totalnum = parseInt(totalnum) + parseInt(num"+m+")");
+                    }
+
+                    $.ajax({
+                        url: "/selfdiagnosis/result",
+                        type: "POST",
+                        dataType: "JSON",
+                        data: {totalnum: totalnum}
+                    }).then(
+                        function (json) {
+
+                            $("#pre").remove();
+
+                            $("#content").empty();
+                            $("#content").append("<p id=\"msg\" style=\"width:66%; text-align:center; font-size: 32px;\">" + json.msg + "</p>");
+
+                            $("#container").append("<div class=\"btn_foot\"><a><button id=\"btnSave\" type=\"button\" class=\"btn btn-secondary mt-4 justify-content-md-center border-0\">저장하기</button></a></div>");
+
+                            $("#btnSave").on("click", function () {
+                                const resultMsg = $("#msg").text();
+
+                                $.ajax({
+                                    url: "/selfdiagnosis/saveResult",
+                                    type: "POST",
+                                    dataType: "JSON",
+                                    data: { msg: resultMsg },
+                                    success: function (json) {
+                                        if(json.result===1){
+                                            alert(json.msg);
+                                            location.href="/selfdiagnosis/resultList";
+                                        }
+                                        else{
+                                            alert(json.msg);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    );
+
+                } else {
+                    return false;
+                }
+
+            }
+
+        })
+    </script>
+</head>
+<body>
+    <div class="top_button">
+        <a href="/user/myPage">
+        <button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+        <a href="/user/logout">
+        <button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+    </div>
+    <div id="wrap">
+        <div class="logo">
+            <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="/analysis/main">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/selfdiagnosis/main">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/findnear/main">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chatbot/main">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="main_container bg-body-tertiary row" id="container">
+            <div class="content_name">자가진단</div>
+            <p id="pre">다음의 각 문항에는 여러 가지 느낌과 생각이 적혀있는 문장들이 있습니다<br>
+                지난 2주일 동안의 나를 가장 잘 나타내는 문장을 번호 별로 하나씩 골라서 표시해주세요</p>
+            <div class="content_form scroll" id="content">
+                <form id="f" class="form">
+                    <div class="table">
+                        <div class="table-heading">
+                            <div class="table-cell">번호</div>
+                            <div class="table-cell">문항</div>
+                            <div class="table-cell">표시</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-row">
+                                <div class="table-head">1</div>
+                                <div class="table-cell">
+                                    나는 가끔 슬프다<br>
+                                    나는 자주 슬프다<br>
+                                    나는 항상 슬프다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q1" value="0" /></label><br>
+                                    <label><input type="radio" name="q1" value="1" /></label><br>
+                                    <label><input type="radio" name="q1" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">2</div>
+                                <div class="table-cell">
+                                    나에게 제대로 되어가는 일이란 없다<br>
+                                    나는 일이 제대로 되어갈지 확신할 수 없다<br>
+                                    내 모든 일이 제대로 되어갈 것이다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q2" value="2" /></label><br>
+                                    <label><input type="radio" name="q2" value="1" /></label><br>
+                                    <label><input type="radio" name="q2" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">3</div>
+                                <div class="table-cell">
+                                    나는 대체로 무슨 일이든지 웬만큼 한다<br>
+                                    나는 잘못하는 일이 많다<br>
+                                    나는 모든 일을 잘못한다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q3" value="0" /></label><br>
+                                    <label><input type="radio" name="q3" value="1" /></label><br>
+                                    <label><input type="radio" name="q3" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">4</div>
+                                <div class="table-cell">
+                                    나에게는 재미있는 일들이 많다<br>
+                                    나는 재미있는 일들이 더러 있다<br>
+                                    나는 어떤 일도 전혀 재미가 없다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q4" value="0" /></label><br>
+                                    <label><input type="radio" name="q4" value="1" /></label><br>
+                                    <label><input type="radio" name="q4" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">5</div>
+                                <div class="table-cell">
+                                    나는 언제나 못된 행동을 한다<br>
+                                    나는 못된 행동을 할 때가 많다<br>
+                                    나는 가끔 못된 행동을 한다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q5" value="2" /></label><br>
+                                    <label><input type="radio" name="q5" value="1" /></label><br>
+                                    <label><input type="radio" name="q5" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">6</div>
+                                <div class="table-cell">
+                                    나는 가끔씩 나에게 나쁜 일이 일어나지 않을까 생각한다<br>
+                                    나는 나에게 나쁜 일이 일어날까 걱정한다<br>
+                                    나는 나에게 무서운 일이 일어나리라는 것을 확신한다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q6" value="0" /></label><br>
+                                    <label><input type="radio" name="q6" value="1" /></label><br>
+                                    <label><input type="radio" name="q6" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">7</div>
+                                <div class="table-cell">
+                                    나는 나 자신을 미워한다<br>
+                                    나는 나 자신을 좋아하지 않는다<br>
+                                    나는 나 자신을 좋아한다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q7" value="2" /></label><br>
+                                    <label><input type="radio" name="q7" value="1" /></label><br>
+                                    <label><input type="radio" name="q7" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">8</div>
+                                <div class="table-cell">
+                                    잘못되는 일은 모두 내 탓이다<br>
+                                    잘못되는 일은 내 탓인 것이 많다<br>
+                                    잘못되는 일은 보통 내 탓이 아니다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q8" value="2" /></label><br>
+                                    <label><input type="radio" name="q8" value="1" /></label><br>
+                                    <label><input type="radio" name="q8" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">9</div>
+                                <div class="table-cell">
+                                    나는 자살을 생각하지 않는다<br>
+                                    나는 자살을 생각하지만 그렇게 하지는 않을 것이다<br>
+                                    나는 자살하고 싶다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q9" value="0" /></label><br>
+                                    <label><input type="radio" name="q9" value="1" /></label><br>
+                                    <label><input type="radio" name="q9" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">10</div>
+                                <div class="table-cell">
+                                    나는 매일 울고 싶은 기분이다<br>
+                                    나는 울고 싶은 기분인 날도 많다<br>
+                                    나는 때때로 울고 싶은 기분이 된다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q10" value="2" /></label><br>
+                                    <label><input type="radio" name="q10" value="1" /></label><br>
+                                    <label><input type="radio" name="q10" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">11</div>
+                                <div class="table-cell">
+                                    이 일 저 일로 해서 늘 성가시다<br>
+                                    이 일 저 일로 해서 성가실 때가 많다<br>
+                                    간혹 이 일 저 일로 해서 성가실 때가 있다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q11" value="2" /></label><br>
+                                    <label><input type="radio" name="q11" value="1" /></label><br>
+                                    <label><input type="radio" name="q11" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">12</div>
+                                <div class="table-cell">
+                                    나는 사람들과 함께 있는 것이 좋다<br>
+                                    나는 사람들과 함께 있는 것이 싫을 때가 많다<br>
+                                    나는 사람들과 함께 있는 것을 전혀 원치 않는다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q12" value="0" /></label><br>
+                                    <label><input type="radio" name="q12" value="1" /></label><br>
+                                    <label><input type="radio" name="q12" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">13</div>
+                                <div class="table-cell">
+                                    나는 어떤 일에 대한 결정을 내릴 수가 없다<br>
+                                    나는 어떤 일에 대한 결정을 내리기가 어렵다<br>
+                                    나는 쉽게 결정을 내린다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q13" value="2" /></label><br>
+                                    <label><input type="radio" name="q13" value="1" /></label><br>
+                                    <label><input type="radio" name="q13" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">14</div>
+                                <div class="table-cell">
+                                    나는 괜찮게 생겼다<br>
+                                    나는 못생긴 구석이 약간 있다<br>
+                                    나는 못 생겼다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q14" value="0" /></label><br>
+                                    <label><input type="radio" name="q14" value="1" /></label><br>
+                                    <label><input type="radio" name="q14" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">15</div>
+                                <div class="table-cell">
+                                    나는 학교 공부를 해내려면 언제나 노력하여야만 한다<br>
+                                    나는 학교 공부를 해내려면 많이 노력하여야 한다<br>
+                                    나는 별로 어렵지 않게 학교 공부를 해낼 수 있다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q15" value="2" /></label><br>
+                                    <label><input type="radio" name="q15" value="1" /></label><br>
+                                    <label><input type="radio" name="q15" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">16</div>
+                                <div class="table-cell">
+                                    나는 매일 밤 잠들기가 어렵다<br>
+                                    나는 잠들기 어려운 밤이 많다<br>
+                                    나는 잠을 잘 잔다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q16" value="2" /></label><br>
+                                    <label><input type="radio" name="q16" value="1" /></label><br>
+                                    <label><input type="radio" name="q16" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">17</div>
+                                <div class="table-cell">
+                                    나는 가끔 피곤하다<br>
+                                    나는 자주 피곤하다<br>
+                                    나는 언제나 피곤하다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q17" value="0" /></label><br>
+                                    <label><input type="radio" name="q17" value="1" /></label><br>
+                                    <label><input type="radio" name="q17" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">18</div>
+                                <div class="table-cell">
+                                    나는 밥맛이 없는 때가 대부분이다<br>
+                                    나는 밥맛이 없을 때가 많다<br>
+                                    나는 밥맛이 좋다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q18" value="2" /></label><br>
+                                    <label><input type="radio" name="q18" value="1" /></label><br>
+                                    <label><input type="radio" name="q18" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">19</div>
+                                <div class="table-cell">
+                                    나는 몸이 쑤시고 아픈 것에 대해 걱정 하지 않는다<br>
+                                    나는 몸이 쑤시고 아픈 것에 대해 걱정할 때가 많다<br>
+                                    나는 몸이 쑤시고 아픈 것에 대해 항상 걱정한다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q19" value="0" /></label><br>
+                                    <label><input type="radio" name="q19" value="1" /></label><br>
+                                    <label><input type="radio" name="q19" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">20</div>
+                                <div class="table-cell">
+                                    나는 가끔 외롭다고 느낀다<br>
+                                    나는 자주 외롭다고 느낀다<br>
+                                    나는 항상 외롭다고 느낀다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q20" value="0" /></label><br>
+                                    <label><input type="radio" name="q20" value="1" /></label><br>
+                                    <label><input type="radio" name="q20" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">21</div>
+                                <div class="table-cell">
+                                    나는 학교생활이 재미있었던 적이 없다<br>
+                                    나는 가끔씩 학교생활이 재미있다<br>
+                                    나는 학교생활이 재미있을 때가 많다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q21" value="2" /></label><br>
+                                    <label><input type="radio" name="q21" value="1" /></label><br>
+                                    <label><input type="radio" name="q21" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">22</div>
+                                <div class="table-cell">
+                                    나는 친구가 많다<br>
+                                    나는 친구가 좀 있지만 더 있었으면 한다<br>
+                                    나는 친구가 하나도 없다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q22" value="0" /></label><br>
+                                    <label><input type="radio" name="q22" value="1" /></label><br>
+                                    <label><input type="radio" name="q22" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">23</div>
+                                <div class="table-cell">
+                                    나는 학교성적은 괜찮다<br>
+                                    나의 학교성적은 예전처럼 좋지는 않다<br>
+                                    내가 예전에는 무척 잘하던 과목의 성적이 요즘 뚝 떨어졌다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q23" value="0" /></label><br>
+                                    <label><input type="radio" name="q23" value="1" /></label><br>
+                                    <label><input type="radio" name="q23" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">24</div>
+                                <div class="table-cell">
+                                    나는 절대로 다른 아이들처럼 착할 수가 없다<br>
+                                    나는 마음만 먹으면 다른 아이들처럼 착할 수 있다<br>
+                                    나는 다른 아이들처럼 착하다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q24" value="2" /></label><br>
+                                    <label><input type="radio" name="q24" value="1" /></label><br>
+                                    <label><input type="radio" name="q24" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">25</div>
+                                <div class="table-cell">
+                                    나를 진심으로 좋아하는 사람은 아무도 없다<br>
+                                    나를 진심으로 좋아하는 사람이 있을지 확실하지 않다<br>
+                                    분명히 나를 진심으로 좋아하는 사람이 있다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q25" value="2" /></label><br>
+                                    <label><input type="radio" name="q25" value="1" /></label><br>
+                                    <label><input type="radio" name="q25" value="0" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">26</div>
+                                <div class="table-cell">
+                                    나는 나에게 시킨 일을 대체로 한다<br>
+                                    나는 나에게 시킨 일을 대체로 하지 않는다<br>
+                                    나는 나에게 시킨 일을 절대로 하지 않는다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q26" value="0" /></label><br>
+                                    <label><input type="radio" name="q26" value="1" /></label><br>
+                                    <label><input type="radio" name="q26" value="2" /></label>
+                                </div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="table-head">27</div>
+                                <div class="table-cell">
+                                    나는 사람들과 사이좋게 잘 지낸다<br>
+                                    나는 사람들과 잘 싸운다<br>
+                                    나는 사람들과 언제나 싸운다
+                                </div>
+                                <div class="table-cell">
+                                    <label><input type="radio" name="q27" value="0" /></label><br>
+                                    <label><input type="radio" name="q27" value="1" /></label><br>
+                                    <label><input type="radio" name="q27" value="2" /></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: right; font-size: 15px;">출처: 강남구 청소년 심리지원센터</p>
+                    <div class="btn_foot">
+                        <button id="btnSubmit" type="button" class="btn btn-primary border-0">제출하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

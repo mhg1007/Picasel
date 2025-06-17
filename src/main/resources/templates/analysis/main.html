@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#uploadImage').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        sessionStorage.setItem('previewImage', e.target.result);
+                        $('#f').attr('action', '/analysis/preview');
+                        $('#f').submit();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="top_button">
+    <a href="/user/myPage">
+        <button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+    <a href="/user/logout">
+        <button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+</div>
+<div id="wrap">
+    <div class="logo">
+        <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+    </div>
+    <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a href="/analysis/main">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                </li>
+                <li class="nav-item">
+                    <a href="/selfdiagnosis/main">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                </li>
+                <li class="nav-item">
+                    <a href="/findnear/main">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                </li>
+                <li class="nav-item">
+                    <a href="/chatbot/main">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main_container bg-body-tertiary row">
+        <div class="content_name">그림 심리 분석</div>
+        <form id="f" class="form" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <label for="uploadImage" class="form-label mt-4">이미지 파일 업로드</label>
+                <div class="input-group">
+                    <input type="file" class="form-control border-0" id="uploadImage" name="image" accept=".jpg" required/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

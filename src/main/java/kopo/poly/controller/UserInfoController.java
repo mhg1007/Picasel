@@ -3,7 +3,10 @@ package kopo.poly.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kopo.poly.dto.MsgDTO;
+import kopo.poly.dto.ResultDTO;
 import kopo.poly.dto.UserInfoDTO;
+import kopo.poly.service.IAnalysisService;
+import kopo.poly.service.ISelfDiagnosisService;
 import kopo.poly.service.IUserInfoService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.EncryptUtil;
@@ -23,10 +26,13 @@ public class UserInfoController {
 
     private final IUserInfoService userInfoService;
 
+    private final ISelfDiagnosisService selfDiagnosisService;
+    private final IAnalysisService analysisService;
+
     @GetMapping(value = "userRegForm")
     public String userRegForm() {
         log.info("{}.userRegForm",this.getClass().getName());
-        return "/user/userRegForm";
+        return "user/userRegForm";
     }
 
     @ResponseBody
@@ -112,7 +118,7 @@ public class UserInfoController {
     @GetMapping(value = "login")
     public String login() {
         log.info("{}.login",this.getClass().getName());
-        return "/user/login";
+        return "user/login";
     }
 
     @ResponseBody
@@ -176,13 +182,13 @@ public class UserInfoController {
 
         session.invalidate();
 
-        return "/user/logout";
+        return "user/logout";
     }
 
     @GetMapping(value = "searchPassword")
     public String searchPassword() {
         log.info("{}.searchPassword",this.getClass().getName());
-        return "/user/searchPassword";
+        return "user/searchPassword";
     }
 
     @ResponseBody
@@ -241,13 +247,13 @@ public class UserInfoController {
     @GetMapping(value = "emailAuth")
     public String emailAuth() {
         log.info("{}.emailAuth",this.getClass().getName());
-        return "/user/emailAuth";
+        return "user/emailAuth";
     }
 
     @GetMapping(value = "newPassword")
     public String newPassword() {
         log.info("{}.newPassword",this.getClass().getName());
-        return "/user/newPassword";
+        return "user/newPassword";
     }
 
     @ResponseBody
@@ -278,7 +284,7 @@ public class UserInfoController {
 
             res= userInfoService.updatePassword(pDTO);
             if(res == 1){
-                msg="비밀번호가 변경되었습니다.";
+                msg="비밀번호가 변경되었습니다. 변경된 비밀번호로 로그인해주세요.";
             }
             else{
                 msg="비밀번호 변경이 실패하였습니다.";
@@ -300,18 +306,18 @@ public class UserInfoController {
     @GetMapping(value = "myPage")
     public String myPage() {
         log.info("{}.myPage",this.getClass().getName());
-        return "/user/myPage";
+        return "user/myPage";
     }
 
     @GetMapping(value = "delete")
     public String delete() {
         log.info("{}.delete",this.getClass().getName());
-        return "/user/delete";
+        return "user/delete";
     }
 
     @ResponseBody
     @PostMapping(value = "deleteProc")
-    public MsgDTO deleteProc(HttpServletRequest request, HttpSession session) throws Exception {
+    public MsgDTO deleteProc(HttpSession session) throws Exception {
 
         log.info("{}.deleteProc Start!",this.getClass().getName());
 
@@ -320,13 +326,17 @@ public class UserInfoController {
         MsgDTO dto;
 
         UserInfoDTO pDTO;
+        ResultDTO qDTO;
 
         try {
             String email = CmmUtil.nvl((String) session.getAttribute("SS_EMAIL"));
 
             pDTO=UserInfoDTO.builder().email(email).build();
-
             userInfoService.deleteUserInfo(pDTO);
+
+            qDTO=ResultDTO.builder().email(email).build();
+            analysisService.deleteResult(qDTO);
+            selfDiagnosisService.deleteResult(qDTO);
 
             res=userInfoService.getEmailExists(pDTO);
 
@@ -342,7 +352,7 @@ public class UserInfoController {
         }
         catch (Exception e) {
             res=2;
-            msg="오류로 인해 회원탈퇴가 실패하였습니다.";
+            msg="오류로 인해 회원탈퇴가 실패하였습니다. : "+e;
             log.info(e.toString());
         }
         finally {

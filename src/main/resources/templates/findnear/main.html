@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=65cd97fb6964c11106b4919b9d88015c&autoload=false"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            kakao.maps.load(function () {
+                const mapContainer = document.getElementById('map');
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    const mapOption = {
+                        center: new kakao.maps.LatLng(userLat, userLng),
+                        level: 5
+                    };
+                    const map = new kakao.maps.Map(mapContainer, mapOption);
+
+                    const userMarker = new kakao.maps.Marker({
+                        position: new kakao.maps.LatLng(userLat, userLng),
+                        map: map,
+                        title: '현재 위치'
+                    });
+
+                    fetch(`/findnear/find?lat=${userLat}&lng=${userLng}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(center => {
+                                console.log(center);
+                                const marker = new kakao.maps.Marker({
+                                    map: map,
+                                    position: new kakao.maps.LatLng(center.lat, center.lng),
+                                    title: center.name
+                                });
+
+                                const infowindow = new kakao.maps.InfoWindow({
+                                    content: `<div style="padding: 5px 5px 5px 20px;font-size:14px;color:black;text-align:center;">
+                                                <a href="https://map.kakao.com/link/search/${encodeURIComponent(center.address)}"
+                                                target="_blank" style="text-decoration:none;">${center.name}</a><br><span>${center.tel}</span></span></div>`
+                                });
+
+                                kakao.maps.event.addListener(marker, 'click', function () {
+                                    infowindow.open(map, marker);
+                                });
+                            });
+                        })
+                        .catch(error => {
+                            console.error("센터 정보 요청 중 오류 발생:", error);
+                        });
+                }, function (error) {
+                    alert("위치 정보를 가져올 수 없습니다. 위치 접근을 허용했는지 확인해주세요.");
+                    console.error("Geolocation error:", error);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="top_button">
+        <a href="/user/myPage">
+        <button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+        <a href="/user/logout">
+        <button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+    </div>
+    <div id="wrap">
+        <div class="logo">
+            <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="/analysis/main">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/selfdiagnosis/main">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/findnear/main">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chatbot/main">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="main_container bg-body-tertiary row">
+            <div class="content_name">아동상담소 찾기</div>
+            <div class="content">
+                <div id="map" style="width:100%;height:500px;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

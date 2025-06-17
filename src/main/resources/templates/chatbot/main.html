@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/annyang.js"></script>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            annyang.start({
+                autoRestart:true,
+                continuous:true
+            })
+
+            let recognition = annyang.getSpeechRecognizer();
+
+            recognition.interimResults = true;
+            recognition.onresult=function (event){
+
+                let final_transcript="";
+
+                for (let i = event.resultIndex; i<event.results.length; ++i){
+                    if(event.results[i].isFinal){
+                        final_transcript+=event.results[i][0].transcript;
+                    }
+                }
+
+                $("#chatInput").val(final_transcript);
+
+            };
+
+            $("#sendBtn").on("click", sendMessage);
+            $("#chatInput").on("keypress", function (e) {
+                if (e.which === 13) sendMessage();
+            });
+
+            function sendMessage() {
+                const message = $("#chatInput").val().trim();
+                if (message === "") return;
+
+                appendMessage("user", message);
+                $("#chatInput").val("");
+
+                appendMessage("bot", "🤖 응답을 생성 중입니다...");
+
+                $.ajax({
+                    url: "/chatbot/chat",
+                    method: "POST",
+                    data: message,
+                    contentType: "text/plain; charset=utf-8",
+                    success: function (response) {
+                        // 마지막 bot 메시지를 지우고 새 응답 추가
+                        $("#chatBox .bot-message").last().remove();
+                        appendMessage("bot", response);
+                        const utterance=new SpeechSynthesisUtterance(response);
+                        utterance.lang = 'ko-KR'; // 한국어 설정
+                        utterance.pitch = 1;      // 음 높낮이 (기본 1)
+                        utterance.rate = 1;       // 말 속도 (기본 1)
+                        utterance.volume = 1;     // 볼륨 (0~1)
+                        window.speechSynthesis.speak(utterance);
+                    },
+                    error: function () {
+                        $("#chatBox .bot-message").last().remove();
+                        appendMessage("bot", "⚠️ 서버 오류가 발생했습니다.");
+                    }
+                });
+            }
+
+            function appendMessage(role, text) {
+                const messageDiv = $("<div>").addClass("mb-2");
+                if (role === "user") {
+                    messageDiv
+                        .addClass("text-end")
+                        .append(`<div class='d-inline-block bg-primary text-white p-2 rounded'>🧑 ${text}</div>`);
+                } else {
+                    messageDiv
+                        .addClass("bot-message")
+                        .append(`<div class='d-inline-block bg-dark p-2 rounded'>${text}</div>`);
+                }
+                $("#chatBox").append(messageDiv);
+                $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight); // 자동 스크롤
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="top_button">
+        <a href="/user/myPage">
+        <button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+        <a href="/user/logout">
+        <button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+    </div>
+    <div id="wrap">
+        <div class="logo">
+            <a href="/index">
+            <img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="/analysis/main">
+                        <button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/selfdiagnosis/main">
+                        <button type="button" class="btn btn-primary border-0">자가진단</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/findnear/main">
+                        <button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chatbot/main">
+                        <button type="button" class="btn btn-primary border-0">상담 챗봇</button></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="main_container bg-body-tertiary row">
+            <div class="content_name">상담 챗봇</div>
+            <div class="content">
+                <div class="chat-container border rounded p-3 bg-white" style="height: 400px; overflow-y: auto;" id="chatBox">
+                    <!-- 채팅 메시지들이 여기에 추가됩니다 -->
+                </div>
+
+                <div class="input-group mt-3">
+                    <input type="text" class="form-control" placeholder="상담 내용을 입력하세요..." id="chatInput" />
+                    <button class="btn btn-secondary" style="width: 20%" type="button" id="sendBtn">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

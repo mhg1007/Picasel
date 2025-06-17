@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#saveBtn').on("click",function () {
+                $.ajax({
+                    url: '/analysis/insertResult',
+                    method: 'POST',
+                    success: function (json) {
+                        alert(json.msg);
+                        if(json.result===1){
+                            location.href="/analysis/resultList";
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+<div class="top_button">
+    <a href="/user/myPage"><button type="button" class="btn btn-secondary border-0">마이페이지</button></a>
+    <a href="/user/logout"><button type="button" class="btn btn-secondary border-0">로그아웃</button></a>
+</div>
+<div id="wrap">
+    <div class="logo">
+        <a href="/index"><img src="/logo.png" class="logo_img" alt="Picasel Logo"/></a>
+    </div>
+    <nav class="navbar navbar-expand-sm bg-body-tertiary border-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a href="/analysis/main"><button type="button" class="btn btn-primary border-0">그림 심리 분석</button></a></li>
+                <li class="nav-item"><a href="/selfdiagnosis/main"><button type="button" class="btn btn-primary border-0">자가진단</button></a></li>
+                <li class="nav-item"><a href="/findnear/main"><button type="button" class="btn btn-primary border-0">아동상담소 찾기</button></a></li>
+                <li class="nav-item"><a href="/chatbot/main"><button type="button" class="btn btn-primary border-0">상담 챗봇</button></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main_container bg-body-tertiary row">
+        <div class="content_name">그림 심리 분석</div>
+        <div class="content">
+            <div>분석 결과</div>
+            <div class="mt-5 mb-5" th:text="${result}"></div>
+            <div class="btn_foot">
+                <button id="saveBtn" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">결과 저장하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

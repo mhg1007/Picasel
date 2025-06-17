@@ -1870,7 +1870,7 @@ progress {
   --bs-table-color-state: initial;
   --bs-table-bg-state: initial;
   --bs-table-color: var(--bs-emphasis-color);
-  --bs-table-bg: var(--bs-body-bg);
+  --bs-table-bg: #D2771B;
   --bs-table-border-color: #333;
   --bs-table-accent-bg: transparent;
   --bs-table-striped-color: var(--bs-emphasis-color);
@@ -12243,7 +12243,7 @@ select.form-control {
   border: none;
 }
 [type=radio]::before {
-  position: absolute;
+  /*position: absolute;*/
   top: -0.1em;
   left: 0;
   display: inline-block;

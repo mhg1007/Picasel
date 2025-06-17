@@ -13,7 +13,7 @@ public class MainController {
 
     @GetMapping(value = "index")
     public String index(HttpSession session) {
-        return session.getAttribute("SS_EMAIL")==null? "/index" : "/indexLogin";
+        return session.getAttribute("SS_EMAIL")==null? "index" : "indexLogin";
     }
 
 }

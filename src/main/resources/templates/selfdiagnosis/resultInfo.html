@@ -6,22 +6,6 @@
     <link rel="stylesheet" href="/css/bootstrap.css"/>
     <link rel="stylesheet" href="/css/main.css"/>
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("#btnNewPassword").on("click",function(){
-                location.href="/user/newPassword";
-            })
-            $("#btnAnalysisList").on("click",function(){
-                location.href="/analysis/resultList";
-            })
-            $("#btnSelfDiagnosisList").on("click",function(){
-                location.href="/selfdiagnosis/resultList";
-            })
-            $("#btnDelete").on("click",function(){
-                location.href="/user/delete";
-            })
-        })
-    </script>
 </head>
 <body>
     <div class="top_button">
@@ -58,16 +42,25 @@
             </div>
         </nav>
         <div class="main_container bg-body-tertiary row">
-            <div class="content_name">마이페이지</div>
-            <div class="content row">
-                <a href="/user/newPassword">
-                <button id="btnNewPassword" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">비밀번호 변경</button></a>
-                <a href="/analysis/resultList">
-                <button id="btnAnalysisList" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">그림 심리 분석 결과 조회</button></a>
+            <div class="content_name">자가진단 결과 조회</div>
+            <div class="content_form scroll">
+                <div class="table no-border">
+                    <div class="table-body">
+                        <div class="table-row">
+                            <div class="table-head" th:text="${rDTO.saveTime}"></div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-head"><br></div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-head" th:text="${rDTO.result}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn_foot">
                 <a href="/selfdiagnosis/resultList">
-                <button id="btnSelfDiagnosisList" type="button" class="btn btn-primary mb-4 justify-content-md-center border-0">자가진단 결과 조회</button></a>
-                <a href="/user/delete">
-                <button id="btnDelete" type="button" class="btn btn-primary mb-5 justify-content-md-center border-0">회원탈퇴</button></a>
+                <button id="btnBack" type="button" class="btn btn-secondary mt-4 justify-content-md-center border-0">이전으로</button></a>
             </div>
         </div>
     </div>

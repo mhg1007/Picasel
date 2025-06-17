@@ -1,0 +1,145 @@
+
+@font-face {
+    font-family: 'KOMACON';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.2/KOMACON.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CookieRun-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/CookieRun-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#wrap{
+    margin: 0 12.5% 0 12.5%;
+}
+
+.top_button{
+    float: right;
+}
+
+.logo{
+    margin: 30px auto 30px auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.logo_img{
+    width: 196px;
+    height: 58px;
+}
+
+.main_img{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.main_image{
+    width: 75%;
+    object-fit: cover;
+}
+
+.main_container{
+    margin: 3% auto 3% auto;
+    width: 983px;
+    height: 638px;
+    border-radius: 75px 5px 125px 5px / 25px 25px 25px 25px;
+    display: flex;
+    object-fit: cover;
+}
+
+.content_name{
+    margin-left: 6%;
+    margin-top: 3%;
+    font-size: 28px;
+    color: #fff;
+    text-align: left;
+}
+
+.content{
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+}
+
+.content button{
+    width: 55%;
+}
+
+.form{
+    padding: 4%;
+    font-size: 24px;
+    color: #fff;
+}
+
+input::placeholder{
+    font-family: 'CookieRun-Regular', 'KOMACON', sans-serif;
+    color: gray;
+}
+
+.btn_foot{
+    display: flex;
+    justify-content: center;
+}
+
+.table{
+    display:table;
+    width:100%;
+    /*margin-bottom: 10%;*/
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+    background-color: #D2771B;
+    border-collapse: collapse;
+}
+
+.table-heading{
+    display: table-header-group;
+    background-color: #FF8F1F;
+}
+
+.table-row{
+    display:table-row;
+    text-align: center;
+}
+
+.table-cell, .table-head{
+    display:table-cell;
+    text-align: center;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.table-body{
+    display: table-row-group;
+}
+
+p {
+    text-align: left;
+    margin-left: 60px;
+    color: white;
+}
+
+.scroll{
+    width: 100%;              /* 또는 고정 width */
+    height: 450px;            /* 내부가 넘칠 수 있는 높이 설정 */
+    overflow: auto;           /* 내용이 넘치면 스크롤 생성 */
+    padding: 10px;            /* 내부 여백 */
+}
+
+.no-border .table-cell,
+.no-border .table-head,
+.no-border .table {
+    border: none !important;
+    border-radius: 25px 25px 5px 55px / 5px 55px 25px 25px;
+}
+
+.no-border .table * {
+    border: none !important;
+    border-radius: 25px 25px 5px 55px / 5px 55px 25px 25px;
+}
